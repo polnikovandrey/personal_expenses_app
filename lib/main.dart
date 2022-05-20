@@ -24,6 +24,9 @@ class MyHomePage extends StatelessWidget {
     Transaction(id: 't2', title: 'Weekly Groceries', amount: 16.53, date: DateTime.now()),
   ];
 
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
+
   MyHomePage({Key? key}) : super(key: key);
 
   @override
@@ -34,7 +37,6 @@ class MyHomePage extends StatelessWidget {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           const SizedBox(
             child: Card(
@@ -43,6 +45,38 @@ class MyHomePage extends StatelessWidget {
               elevation: 5,
             ),
             width: double.infinity,
+          ),
+          Card(
+            elevation: 5,
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  TextField(
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                    ),
+                  ),
+                  TextField(
+                    controller: amountController,
+                    decoration: const InputDecoration(
+                      labelText: 'Amount',
+                    ),
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      primary: Colors.purple,
+                    ),
+                    child: const Text('Add Transaction'),
+                    onPressed: () {
+                      print(titleController.text);
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
           Column(
             children: transactions.map((transaction) {
