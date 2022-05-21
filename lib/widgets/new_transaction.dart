@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class NewTransaction extends StatelessWidget {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
+  final void Function(String title, double amount) _addNewTransaction;
 
-  NewTransaction({Key? key}) : super(key: key);
+  NewTransaction(this._addNewTransaction, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +33,7 @@ class NewTransaction extends StatelessWidget {
                 primary: Colors.purple,
               ),
               child: const Text('Add Transaction'),
-              onPressed: () {
-                print(titleController.text);
-              },
+              onPressed: () => _addNewTransaction(titleController.text, double.parse(amountController.text)),
             ),
           ],
         ),
