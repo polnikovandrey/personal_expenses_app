@@ -10,9 +10,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Flutter App',
-      home: MyHomePage(),
+    return MaterialApp(
+      home: const MyHomePage(),
+      title: 'Personal Expenses',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.purple,
+          secondary: Colors.amber,
+        ),
+      ),
     );
   }
 }
@@ -56,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: () => _startAddNewTransaction(context),
           )
         ],
-        title: const Text('Flutter App'),
+        title: const Text('Personal Expenses'),
       ),
       body: SingleChildScrollView(
         child: Column(
