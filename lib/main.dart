@@ -14,9 +14,24 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(),
       title: 'Personal Expenses',
       theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          titleTextStyle: TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.purple,
           secondary: Colors.amber,
+        ),
+        fontFamily: 'Quicksand',
+        textTheme: const TextTheme(
+          headline6: TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
