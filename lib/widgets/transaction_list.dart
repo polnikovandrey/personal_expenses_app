@@ -34,31 +34,36 @@ class TransactionList extends StatelessWidget {
               itemBuilder: (context, index) {
                 var transaction = _userTransactions[index];
                 return Card(
-                  child: Row(
-                    children: [
-                      Container(
-                        child: Text(
-                          '\$${transaction.amount.toStringAsFixed(2)}',
-                          style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 20, fontWeight: FontWeight.bold),
+                  elevation: 5,
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 5,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: FittedBox(
+                          child: Text(
+                            '\$${transaction.amount.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2)),
-                        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                        padding: const EdgeInsets.all(10),
                       ),
-                      Column(
-                        children: [
-                          Text(
-                            transaction.title,
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          Text(
-                            DateFormat.yMMMd().format(transaction.date),
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      ),
-                    ],
+                      radius: 30,
+                    ),
+                    subtitle: Text(
+                      DateFormat.yMMMd().format(transaction.date),
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    title: Text(
+                      transaction.title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
                   ),
                 );
               },
