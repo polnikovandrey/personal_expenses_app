@@ -4,8 +4,9 @@ import 'package:personal_expenses_app/models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _userTransactions;
+  final void Function(String id) _deleteTransaction;
 
-  const TransactionList(this._userTransactions, {Key? key}) : super(key: key);
+  const TransactionList(this._userTransactions, this._deleteTransaction, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class TransactionList extends StatelessWidget {
             )
           : ListView.builder(
               itemBuilder: (context, index) {
-                var transaction = _userTransactions[index];
+                final transaction = _userTransactions[index];
                 return Card(
                   elevation: 5,
                   margin: const EdgeInsets.symmetric(
@@ -63,6 +64,13 @@ class TransactionList extends StatelessWidget {
                     title: Text(
                       transaction.title,
                       style: Theme.of(context).textTheme.headline6,
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.delete,
+                        color: Theme.of(context).errorColor,
+                      ),
+                      onPressed: () => _deleteTransaction(transaction.id),
                     ),
                   ),
                 );
