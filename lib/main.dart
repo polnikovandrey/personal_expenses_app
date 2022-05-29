@@ -100,11 +100,11 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(
-              height: appHeightWoAppBarAndPaddingTop * 0.4,
+              height: appHeightWoAppBarAndPaddingTop * 0.3,
               child: Chart(_recentTransactions),
             ),
             SizedBox(
-              height: appHeightWoAppBarAndPaddingTop * 0.6,
+              height: appHeightWoAppBarAndPaddingTop * 0.7,
               child: TransactionList(_userTransactions, _deleteTransaction),
             ),
           ],
