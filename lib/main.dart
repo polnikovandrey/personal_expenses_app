@@ -22,10 +22,7 @@ class MyApp extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.purple,
-          secondary: Colors.amber
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple, secondary: Colors.amber),
         fontFamily: 'Quicksand',
         textTheme: const TextTheme(
           headline6: TextStyle(
@@ -50,6 +47,11 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
     Transaction(id: 't1', title: 'New Shoes', amount: 69.99, date: DateTime.now()),
     Transaction(id: 't2', title: 'Weekly Groceries', amount: 16.53, date: DateTime.now()),
+    Transaction(id: 't3', title: 'T-Shirt', amount: 20.21, date: DateTime.now()),
+    Transaction(id: 't4', title: 'Cat Food', amount: 5.75, date: DateTime.now()),
+    Transaction(id: 't5', title: 'Coffee', amount: 10.03, date: DateTime.now()),
+    Transaction(id: 't6', title: 'Tea', amount: 8.47, date: DateTime.now()),
+    Transaction(id: 't7', title: 'Milk', amount: 6.71, date: DateTime.now()),
   ];
 
   List<Transaction> get _recentTransactions {
@@ -80,22 +82,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        )
+      ],
+      title: const Text('Personal Expenses'),
+    );
+    final mediaQuery = MediaQuery.of(context);
+    final appHeightWoAppBarAndPaddingTop = (mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top);
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _startAddNewTransaction(context),
-          )
-        ],
-        title: const Text('Personal Expenses'),
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(_recentTransactions),
-            TransactionList(_userTransactions, _deleteTransaction),
+            SizedBox(
+              height: appHeightWoAppBarAndPaddingTop * 0.4,
+              child: Chart(_recentTransactions),
+            ),
+            SizedBox(
+              height: appHeightWoAppBarAndPaddingTop * 0.6,
+              child: TransactionList(_userTransactions, _deleteTransaction),
+            ),
           ],
         ),
       ),
