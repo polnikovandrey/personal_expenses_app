@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
       title: const Text('Personal Expenses'),
     );
     final mediaQuery = MediaQuery.of(context);
-    final appHeightWoAppBarAndPaddingTop = (mediaQuery.size.height - appBar.preferredSize.height - mediaQuery.padding.top);
+    final appHeightWoAppBarAndPaddingTop = (mediaQuery.size.height - mediaQuery.padding.top - appBar.preferredSize.height);
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
