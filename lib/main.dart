@@ -54,6 +54,14 @@ class _MyHomePageState extends State<MyHomePage> {
     Transaction(id: 't7', title: 'Milk', amount: 6.71, date: DateTime.now()),
   ];
 
+  bool _showChart = false;
+
+  void _setShowChart(bool showChart) {
+    setState(() {
+      _showChart = showChart;
+    });
+  }
+
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((transaction) => transaction.date.isAfter(DateTime.now().subtract(const Duration(days: 7)))).toList();
   }
@@ -82,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
       actions: [
         IconButton(
@@ -93,20 +102,34 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     final mediaQuery = MediaQuery.of(context);
     final appHeightWoAppBarAndPaddingTop = (mediaQuery.size.height - mediaQuery.padding.top - appBar.preferredSize.height);
+    SizedBox chartContainer(double heightRatio) => SizedBox(
+          height: appHeightWoAppBarAndPaddingTop * heightRatio,
+          child: Chart(_recentTransactions),
+        );
+    var transactionListContainer = SizedBox(
+      height: appHeightWoAppBarAndPaddingTop * 0.7,
+      child: TransactionList(_userTransactions, _deleteTransaction),
+    );
     return Scaffold(
       appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(
-              height: appHeightWoAppBarAndPaddingTop * 0.3,
-              child: Chart(_recentTransactions),
-            ),
-            SizedBox(
-              height: appHeightWoAppBarAndPaddingTop * 0.7,
-              child: TransactionList(_userTransactions, _deleteTransaction),
-            ),
+            if (landscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: _setShowChart,
+                  ),
+                ],
+              ),
+            if (landscape) _showChart ? chartContainer(0.7) : transactionListContainer,
+            if (!landscape) chartContainer(0.3),
+            if (!landscape) transactionListContainer,
           ],
         ),
       ),
