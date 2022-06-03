@@ -65,7 +65,7 @@ class TransactionList extends StatelessWidget {
                     transaction.title,
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  trailing: MediaQuery.of(context).size.width > 360
+                  trailing: MediaQuery.of(context).size.width > 460
                       ? TextButton.icon(
                           onPressed: () => _deleteTransaction(transaction.id),
                           icon: Icon(
