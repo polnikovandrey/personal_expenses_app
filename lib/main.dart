@@ -90,7 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final landscape = mediaQuery.orientation == Orientation.landscape;
     final appBar = AppBar(
       actions: [
         IconButton(
@@ -100,7 +101,6 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
       title: const Text('Personal Expenses'),
     );
-    final mediaQuery = MediaQuery.of(context);
     final appHeightWoAppBarAndPaddingTop = (mediaQuery.size.height - mediaQuery.padding.top - appBar.preferredSize.height);
     SizedBox chartContainer(double heightRatio) => SizedBox(
           height: appHeightWoAppBarAndPaddingTop * heightRatio,
