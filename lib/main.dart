@@ -82,10 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _startAddNewTransaction(BuildContext context) {
+  void _startAddNewTransaction(BuildContext context, bool ios) {
     showModalBottomSheet(
       builder: (_) {
-        return NewTransaction(_addNewTransaction);
+        return NewTransaction(_addNewTransaction, ios);
       },
       context: context,
     );
@@ -152,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             CupertinoButton(
               child: const Icon(CupertinoIcons.add),
-              onPressed: () => _startAddNewTransaction(context),
+              onPressed: () => _startAddNewTransaction(context, ios),
             ),
           ],
         ),
@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => _startAddNewTransaction(context),
+            onPressed: () => _startAddNewTransaction(context, ios),
           )
         ],
         title: const Text('Personal Expenses'),
@@ -179,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
-          onPressed: () => _startAddNewTransaction(context),
+          onPressed: () => _startAddNewTransaction(context, ios),
         ),
       );
     }
