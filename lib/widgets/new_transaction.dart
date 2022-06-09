@@ -6,10 +6,16 @@ class NewTransaction extends StatefulWidget {
   final void Function(String title, double amount, DateTime date) _addNewTransaction;
   final bool _ios;
 
-  const NewTransaction(this._addNewTransaction, this._ios, {Key? key}) : super(key: key);
+  NewTransaction(this._addNewTransaction, this._ios, {Key? key}) : super(key: key) {
+    print('NewTransactionWidget()');
+  }
 
   @override
-  State<NewTransaction> createState() => _NewTransactionState();
+  // ignore: no_logic_in_create_state
+  State<NewTransaction> createState() {
+    print('NewTransactionWidget.createState()');
+    return _NewTransactionState();
+  }
 }
 
 class _NewTransactionState extends State<NewTransaction> {
@@ -17,32 +23,29 @@ class _NewTransactionState extends State<NewTransaction> {
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
 
-  void _submitData() {
-    var enteredTitle = _titleController.text;
-    var enteredAmount = _amountController.text.isEmpty ? 0.0 : double.parse(_amountController.text);
-    if (_titleController.text.isNotEmpty && _amountController.text.isNotEmpty && enteredAmount > 0 && _selectedDate != null) {
-      widget._addNewTransaction(
-        enteredTitle,
-        enteredAmount,
-        _selectedDate!,
-      );
-      Navigator.of(context).pop();
-    }
+  _NewTransactionState() {
+    print('_NewTransactionState()');
   }
 
-  void _presentDatePicker() {
-    showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2022),
-      lastDate: DateTime.now(),
-    ).then((pickedDate) {
-      if (pickedDate != null) {
-        setState(() {
-          _selectedDate = pickedDate;
-        });
-      }
-    });
+
+  @override
+  void initState() {
+    super.initState();
+    print('_NewTransactionState.initState()');
+  }
+
+
+  @override
+  void didUpdateWidget(NewTransaction oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print('_NewTransactionState.didUpdateWidget()');
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('_NewTransactionState.dispose()');
   }
 
   @override
@@ -98,5 +101,33 @@ class _NewTransactionState extends State<NewTransaction> {
         ),
       ),
     );
+  }
+
+  void _submitData() {
+    var enteredTitle = _titleController.text;
+    var enteredAmount = _amountController.text.isEmpty ? 0.0 : double.parse(_amountController.text);
+    if (_titleController.text.isNotEmpty && _amountController.text.isNotEmpty && enteredAmount > 0 && _selectedDate != null) {
+      widget._addNewTransaction(
+        enteredTitle,
+        enteredAmount,
+        _selectedDate!,
+      );
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2022),
+      lastDate: DateTime.now(),
+    ).then((pickedDate) {
+      if (pickedDate != null) {
+        setState(() {
+          _selectedDate = pickedDate;
+        });
+      }
+    });
   }
 }
