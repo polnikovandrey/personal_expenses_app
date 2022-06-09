@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:personal_expenses_app/models/transaction.dart';
+import 'package:personal_expenses_app/widgets/transaction_item.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _userTransactions;
@@ -33,63 +33,7 @@ class TransactionList extends StatelessWidget {
             );
           })
         : ListView.builder(
-            itemBuilder: (context, index) {
-              final transaction = _userTransactions[index];
-              return Card(
-                elevation: 5,
-                margin: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 5,
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: FittedBox(
-                        child: Text(
-                          '\$${transaction.amount.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    radius: 30,
-                  ),
-                  subtitle: Text(
-                    DateFormat.yMMMd().format(transaction.date),
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  title: Text(
-                    transaction.title,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  trailing: mediaQuery.size.width > 460
-                      ? TextButton.icon(
-                          onPressed: () => _deleteTransaction(transaction.id),
-                          icon: Icon(
-                            Icons.delete,
-                            color: Theme.of(context).errorColor,
-                          ),
-                          label: Text(
-                            'Delete',
-                            style: TextStyle(
-                              color: Theme.of(context).errorColor,
-                            ),
-                          ),
-                        )
-                      : IconButton(
-                          icon: Icon(
-                            Icons.delete,
-                            color: Theme.of(context).errorColor,
-                          ),
-                          onPressed: () => _deleteTransaction(transaction.id),
-                        ),
-                ),
-              );
-            },
+            itemBuilder: (context, index) => TransactionItem(_userTransactions[index], mediaQuery, _deleteTransaction),
             itemCount: _userTransactions.length,
           );
   }
