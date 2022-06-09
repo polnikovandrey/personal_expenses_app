@@ -59,6 +59,102 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool _showChart = false;
 
+  @override
+  Widget build(BuildContext context) {
+    return Platform.isIOS ? _createCupertinoScaffold() : _createMaterialScaffold();
+  }
+
+  Widget _createCupertinoScaffold() {
+    final mediaQueryData = MediaQuery.of(context);
+    CupertinoNavigationBar cupertinoNavBar = CupertinoNavigationBar(
+      middle: const Text('Personal Expenses'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CupertinoButton(
+            child: const Icon(CupertinoIcons.add),
+            onPressed: () => _startAddNewTransaction(context, true),
+          ),
+        ],
+      ),
+    );
+    return CupertinoPageScaffold(
+      navigationBar: cupertinoNavBar,
+      child: SafeArea(
+        child: createPageBody(mediaQueryData, cupertinoNavBar.preferredSize.height, true),
+      ),
+    );
+  }
+
+  Widget _createMaterialScaffold() {
+    final mediaQueryData = MediaQuery.of(context);
+    final AppBar appBar = AppBar(
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context, false),
+        )
+      ],
+      title: const Text('Personal Expenses'),
+    );
+    return Scaffold(
+      appBar: appBar,
+      body: createPageBody(mediaQueryData, appBar.preferredSize.height, false),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => _startAddNewTransaction(context, false),
+      ),
+    );
+  }
+
+  Widget createPageBody(MediaQueryData mediaQueryData, double appBarPreferredHeight, bool ios) {
+    double appHeightWoAppBarAndPaddingTop = _getAppHeightWoAppBarAndPaddingTop(mediaQueryData, appBarPreferredHeight);
+    final landscape = mediaQueryData.orientation == Orientation.landscape;
+    var transactionListContainer = SizedBox(
+      height: appHeightWoAppBarAndPaddingTop * 0.7,
+      child: TransactionList(_userTransactions, _deleteTransaction),
+    );
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: landscape
+            ? _buildLandscapeContent(transactionListContainer, appHeightWoAppBarAndPaddingTop, ios)
+            : _buildPortraitContent(transactionListContainer, appHeightWoAppBarAndPaddingTop),
+      ),
+    );
+  }
+
+  List<Widget> _buildPortraitContent(SizedBox transactionListContainer, double appHeightWoAppBarAndPaddingTop) => [
+    _chartContainer(appHeightWoAppBarAndPaddingTop, 0.3),
+    transactionListContainer,
+  ];
+
+  List<Widget> _buildLandscapeContent(SizedBox transactionListContainer, double appHeightWoAppBarAndPaddingTop, bool ios) => [
+    Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Show Chart',
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        ios
+            ? CupertinoSwitch(
+          activeColor: Theme.of(context).colorScheme.primary,
+          value: _showChart,
+          onChanged: _setShowChart,
+        )
+            : Switch.adaptive(
+          activeColor: Theme.of(context).colorScheme.primary,
+          value: _showChart,
+          onChanged: _setShowChart,
+        ),
+      ],
+    ),
+    _showChart ? _chartContainer(appHeightWoAppBarAndPaddingTop, 0.7) : transactionListContainer,
+  ];
+
   void _setShowChart(bool showChart) {
     setState(() {
       _showChart = showChart;
@@ -92,103 +188,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   SizedBox _chartContainer(double appHeightWoAppBarAndPaddingTop, double heightRatio) => SizedBox(
-        height: appHeightWoAppBarAndPaddingTop * heightRatio,
-        child: Chart(_recentTransactions),
-      );
+    height: appHeightWoAppBarAndPaddingTop * heightRatio,
+    child: Chart(_recentTransactions),
+  );
 
   double _getAppHeightWoAppBarAndPaddingTop(MediaQueryData mediaQuery, double appBarPreferredHeight) {
     return mediaQuery.size.height - mediaQuery.padding.top - appBarPreferredHeight;
-  }
-
-  List<Widget> _buildLandscapeContent(SizedBox transactionListContainer, double appHeightWoAppBarAndPaddingTop, bool ios) => [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Show Chart',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            ios
-                ? CupertinoSwitch(
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    value: _showChart,
-                    onChanged: _setShowChart,
-                  )
-                : Switch.adaptive(
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    value: _showChart,
-                    onChanged: _setShowChart,
-                  ),
-          ],
-        ),
-        _showChart ? _chartContainer(appHeightWoAppBarAndPaddingTop, 0.7) : transactionListContainer,
-      ];
-
-  List<Widget> _buildPortraitContent(SizedBox transactionListContainer, double appHeightWoAppBarAndPaddingTop) => [
-        _chartContainer(appHeightWoAppBarAndPaddingTop, 0.3),
-        transactionListContainer,
-      ];
-
-  Widget createPageBody(MediaQueryData mediaQueryData, double appBarPreferredHeight, bool ios) {
-    double appHeightWoAppBarAndPaddingTop = _getAppHeightWoAppBarAndPaddingTop(mediaQueryData, appBarPreferredHeight);
-    final landscape = mediaQueryData.orientation == Orientation.landscape;
-    var transactionListContainer = SizedBox(
-      height: appHeightWoAppBarAndPaddingTop * 0.7,
-      child: TransactionList(_userTransactions, _deleteTransaction),
-    );
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: landscape
-            ? _buildLandscapeContent(transactionListContainer, appHeightWoAppBarAndPaddingTop, ios)
-            : _buildPortraitContent(transactionListContainer, appHeightWoAppBarAndPaddingTop),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQueryData = MediaQuery.of(context);
-    var ios = Platform.isIOS;
-    if (ios) {
-      CupertinoNavigationBar cupertinoNavBar = CupertinoNavigationBar(
-        middle: const Text('Personal Expenses'),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CupertinoButton(
-              child: const Icon(CupertinoIcons.add),
-              onPressed: () => _startAddNewTransaction(context, ios),
-            ),
-          ],
-        ),
-      );
-      return CupertinoPageScaffold(
-        navigationBar: cupertinoNavBar,
-        child: SafeArea(
-          child: createPageBody(mediaQueryData, cupertinoNavBar.preferredSize.height, ios),
-        ),
-      );
-    } else {
-      final AppBar appBar = AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _startAddNewTransaction(context, ios),
-          )
-        ],
-        title: const Text('Personal Expenses'),
-      );
-      return Scaffold(
-        appBar: appBar,
-        body: createPageBody(mediaQueryData, appBar.preferredSize.height, ios),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => _startAddNewTransaction(context, ios),
-        ),
-      );
-    }
   }
 }
