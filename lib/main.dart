@@ -91,16 +91,47 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  double getAppHeightWoAppBarAndPaddingTop(MediaQueryData mediaQuery, double appBarPreferredHeight) {
+  SizedBox _chartContainer(double appHeightWoAppBarAndPaddingTop, double heightRatio) => SizedBox(
+        height: appHeightWoAppBarAndPaddingTop * heightRatio,
+        child: Chart(_recentTransactions),
+      );
+
+  double _getAppHeightWoAppBarAndPaddingTop(MediaQueryData mediaQuery, double appBarPreferredHeight) {
     return mediaQuery.size.height - mediaQuery.padding.top - appBarPreferredHeight;
   }
 
+  List<Widget> _buildLandscapeContent(SizedBox transactionListContainer, double appHeightWoAppBarAndPaddingTop, bool ios) => [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Show Chart',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            ios
+                ? CupertinoSwitch(
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    value: _showChart,
+                    onChanged: _setShowChart,
+                  )
+                : Switch.adaptive(
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    value: _showChart,
+                    onChanged: _setShowChart,
+                  ),
+          ],
+        ),
+        _showChart ? _chartContainer(appHeightWoAppBarAndPaddingTop, 0.7) : transactionListContainer,
+      ];
+
+  List<Widget> _buildPortraitContent(SizedBox transactionListContainer, double appHeightWoAppBarAndPaddingTop) => [
+        _chartContainer(appHeightWoAppBarAndPaddingTop, 0.3),
+        transactionListContainer,
+      ];
+
   Widget createPageBody(MediaQueryData mediaQueryData, double appBarPreferredHeight, bool ios) {
-    SizedBox chartContainer(double appHeightWoAppBarAndPaddingTop, double heightRatio) => SizedBox(
-          height: appHeightWoAppBarAndPaddingTop * heightRatio,
-          child: Chart(_recentTransactions),
-        );
-    double appHeightWoAppBarAndPaddingTop = getAppHeightWoAppBarAndPaddingTop(mediaQueryData, appBarPreferredHeight);
+    double appHeightWoAppBarAndPaddingTop = _getAppHeightWoAppBarAndPaddingTop(mediaQueryData, appBarPreferredHeight);
     final landscape = mediaQueryData.orientation == Orientation.landscape;
     var transactionListContainer = SizedBox(
       height: appHeightWoAppBarAndPaddingTop * 0.7,
@@ -109,33 +140,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (landscape)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Show Chart',
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                ios
-                    ? CupertinoSwitch(
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        value: _showChart,
-                        onChanged: _setShowChart,
-                      )
-                    : Switch.adaptive(
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        value: _showChart,
-                        onChanged: _setShowChart,
-                      ),
-              ],
-            ),
-          if (landscape) _showChart ? chartContainer(appHeightWoAppBarAndPaddingTop, 0.7) : transactionListContainer,
-          if (!landscape) chartContainer(appHeightWoAppBarAndPaddingTop, 0.3),
-          if (!landscape) transactionListContainer,
-        ],
+        children: landscape
+            ? _buildLandscapeContent(transactionListContainer, appHeightWoAppBarAndPaddingTop, ios)
+            : _buildPortraitContent(transactionListContainer, appHeightWoAppBarAndPaddingTop),
       ),
     );
   }
